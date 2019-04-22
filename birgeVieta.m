@@ -1,4 +1,4 @@
-function [roots, iterationsCount, bVector, cVector] = birgeVieta(polynomial, initialGuess, maxIterations, eps)
+function [roots, iterationsCount, bVector, cVector] = birgeVieta(polynomial, initialGuess, maxIterations, eps )
 
     functionCoeff = sym2poly(sym(polynomial));
     x = initialGuess;

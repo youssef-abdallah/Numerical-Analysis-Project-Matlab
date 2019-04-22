@@ -93,9 +93,12 @@ switch contents
     case 2
         %Bisection
         v = 2;
-        %handle CoiumnNames in this Case-----------------------------------
-        %handle String of xx0 ,xx1 in this Case----------------------------
-        %handle Visiblity of Panes-----------------------------------------
+        set(handles.table,'ColumnName', {'Xl', 'Xu', 'Xr', 'F(Xr)', 'Es'});
+        set(handles.xx0,'String','Xl');
+        set(handles.xx1,'String','Xu');
+        set(handles.Info,'Visible','On');
+        set(handles.X1,'Visible','On');
+        set(handles.xx1,'Visible','On');
     case 3
         %False Postion
         v = 3;
@@ -108,9 +111,12 @@ switch contents
     case 4
         %Fixed Point
         v = 4;
-        %handle CoiumnNames in this Case-----------------------------------
-        %handle String of xx0 ,xx1 in this Case----------------------------
-        %handle Visiblity of Panes-----------------------------------------
+        % change names
+        set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Es'});
+        set(handles.xx0,'String','X0');
+        set(handles.Info,'Visible','On');
+        set(handles.X1,'Visible','Off');
+        set(handles.xx1,'Visible','Off');
     case 5
         %Newton Raphson
         v = 5;
@@ -169,22 +175,63 @@ global itr arr h1 h2 h3;
 v = get(handles.methods, 'Val');
 % need for know how many plots  draw---------------------------------------
 s = size(arr,1);
-if itr ~= 0
+if itr ~= 0 && ishandle(h1)
     delete(h1);
+end
+if itr ~= 0 && ishandle(h2)
     delete(h2);
+end
+if itr ~= 0 && ishandle(h3)
     delete(h3);
 end
-if (itr + 1) < (max(s)+1)
-    itr = itr + 1;
+switch v
+    case 2
+        %Bisection
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 3
+      %False Postion
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 4
+        %Fixed Point
+    case 5
+        %Newton Raphson
+    case 6
+      %Secant
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 7
+        %Bierge Vieta
+    case 8
+        %All
+    otherwise
 end
-xx = arr{itr,1};
-yy = -10:10;
-h1 = plot(xx*ones(size(yy)),yy, 'k');
-xx = arr{itr,2};
-h2 = plot(xx*ones(size(yy)),yy, 'k');
-xx = arr{itr,3};
-h3 = plot(xx*ones(size(yy)),yy, 'g');
-
+%x^3-0.165*x^2+3.993*10^-4
 % --- Executes on button press in Previous.
 function Previous_Callback(hObject, eventdata, handles)
 % hObject    handle to Previous (see GCBO)
@@ -193,22 +240,63 @@ function Previous_Callback(hObject, eventdata, handles)
 global itr arr h1 h2 h3;
 v = get(handles.methods, 'Val');
 % need for know how many plots  draw---------------------------------------
-if itr ~= 0
+s = size(arr,1);
+if itr ~= 0 && ishandle(h1)
     delete(h1);
+end
+if itr ~= 0 && ishandle(h2)
     delete(h2);
+end
+if itr ~= 0 && ishandle(h3)
     delete(h3);
 end
-if (itr - 1) > 0
-    itr = itr - 1;
+switch v
+    case 2
+        %Bisection
+        if (itr - 1) > 0
+            itr = itr - 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 3
+      %False Postion
+        if (itr - 1) > 0
+            itr = itr - 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 4
+        %Fixed Point
+    case 5
+        %Newton Raphson
+    case 6
+      %Secant
+        if (itr - 1) > 0
+            itr = itr - 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+    case 7
+        %Bierge Vieta
+    case 8
+        %All
+    otherwise
 end
-xx = arr{itr,1};
-yy = -10:10;
-h1 = plot(xx*ones(size(yy)),yy, 'k');
-xx = arr{itr,2};
-h2 = plot(xx*ones(size(yy)),yy, 'k');
-xx = arr{itr,3};
-h3 = plot(xx*ones(size(yy)),yy, 'g');
-
 
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)
@@ -252,11 +340,13 @@ else
    switch v
     case 2
         %Bisection
+        Bisection(xx0,xx1,max,error,equation,handles);
     case 3
       %False Postion
       False_Postion(xx0,xx1,max,error,equation,handles);
     case 4
         %Fixed Point
+        Fixed_Point(xx0,max,error,equation,handles);
     case 5
         %Newton Raphson
         Newton(xx0, equation, max, error, handles);
