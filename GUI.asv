@@ -86,9 +86,7 @@ global v allarr;
 allarr = [];
 cla(handles.axes1);
 set(handles.table,'Visible', 'Off');
-set(handles.NP,'Visible', 'Off');
-set(handles.RT,'Visible', 'Off');
-set(handles.iteration,'String','');
+
 switch contents
     case 1
         %Empty
