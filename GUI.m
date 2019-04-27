@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 25-Apr-2019 17:02:04
+% Last Modified by GUIDE v2.5 27-Apr-2019 15:59:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -420,7 +420,7 @@ function Calculate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 cla(handles.axes1);
 zoom on;
-global arr itr diff i allarr equation equ;
+global arr itr diff i allarr equation xx0 xx1 Max error equ;
 v = get(handles.methods, 'Val');
 equation = get(handles.equation,'String');
 equations = strcat('@(x)',equation);
@@ -434,7 +434,7 @@ if v ~= 8
     x1 = get(handles.X1,'String');
     xx1 = str2double(x1);
     m = get(handles.maxI,'String');
-    max = str2double(m);
+    Max = str2double(m);
     e = get(handles.epsilonE,'String');
     error = str2double(e);
 end
@@ -442,7 +442,7 @@ if (isempty(x0) && v ~= 8) || isempty(equation)
    fprintf('Error: Enter Text first\n');
 else
    if isempty(m) && v ~= 8
-       max = 50;
+       Max = 50;
    end
    if isempty(e) && v ~= 8
        error = 0.00001;
@@ -455,22 +455,22 @@ else
    switch v
     case 2
         %Bisection
-        Bisection(xx0,xx1,max,error,equation,handles);
+        Bisection(xx0,xx1,Max,error,equation,handles);
     case 3
       %False Postion
-      False_Postion(xx0,xx1,max,error,equation,handles);
+      False_Postion(xx0,xx1,Max,error,equation,handles);
     case 4
         %Fixed Point
-        Fixed_Point(xx0,max,error,equation,handles);
+        Fixed_Point(xx0,Max,error,equation,handles);
     case 5
         %Newton Raphson
-        Newton(xx0, equation, max, error, handles);
+        Newton(xx0, equation, Max, error, handles);
     case 6
       %Secant
-      Secant(xx0,xx1,equation,max,error,handles);
+      Secant(xx0,xx1,equation,Max,error,handles);
     case 7
         %Bierge Vieta
-        diff = birgeVieta(equation, xx0, max, error, handles);
+        diff = birgeVieta(equation, xx0, Max, error, handles);
         itr = 1;
     case 8
         %All
@@ -873,3 +873,91 @@ function clearAll(handles)
     set(handles.AxesLeft, 'Visible' , 'Off');
     set(handles.X1,'Visible','On');
     set(handles.xx1,'Visible','On');
+
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global equation xx0 xx1 Max error arr;
+v = get(handles.methods, 'Val');
+fileID = fopen('Result.txt','w');
+fprintf(fileID,'Equation : %s\r\n',equation);
+switch v
+    case 2
+        fprintf(fileID,'Method : %s\r\n','Bisection');
+    case 3
+        fprintf(fileID,'Method : %s\r\n','False_Postion');
+    case 4
+        fprintf(fileID,'Method : %s\r\n','Fixed_Point');
+    case 5
+        fprintf(fileID,'Method : %s\r\n','Newton_Raphson');
+    case 6
+        fprintf(fileID,'Method : %s\r\n','Secant');
+    case 7
+        fprintf(fileID,'Method : %s\r\n','Bierge_Vieta');
+    otherwise
+end
+fprintf(fileID,'First Point : %d\r\n',xx0);
+if (v == 2 || v == 3 || v == 6)
+    fprintf(fileID,'First Point : %d\r\n',xx1);
+end
+fprintf(fileID,'Max Iteration : %d\r\n',Max);
+fprintf(fileID,'Epsilon : %d\r\n',error);
+fprintf(fileID,'\r\n\r\n');
+switch v
+    case 2
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xl','Xu','Xr','F(Xr)','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','--','--','-----','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : max(size(arr,1))
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
+    case 3
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xl','Xu','Xr','F(Xr)','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','--','--','-----','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : max(size(arr,1))
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
+    case 4
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi','F(Xi)','Xi+1','F(Xi+1)','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','-----','----','-------','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : max(size(arr,1))
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
+    case 5
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi','F(Xi)','Xi+1','F(Xi+1)','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','-----','----','-------','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : max(size(arr,1))
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
+    case 6
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi-1','Xi','Xi+1','F(Xi+1)','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','----','--','----','-------','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : max(size(arr,1))
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
+    case 7
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','A','B','C','Xi+1','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','-','-','-','----','--');
+        fprintf(fileID,'\r\n');
+        j = 1;
+        for i = 1 : max(size(arr,1))
+            if (arr{i,1} ~= '-')
+                fprintf(fileID,'%4s %22.10d %22.10d %22.10d %22.10s %22.10s\r\n','-',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+            else
+                if i == 1
+                    fprintf(fileID,'%4d %22s %22s %22s %22.10d %22s\r\n',j,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+                else
+                    fprintf(fileID,'%4d %22s %22s %22s %22.10d %22.10d\r\n',j,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+                end
+                j = j + 1;
+            end
+        end
+    otherwise
+end
