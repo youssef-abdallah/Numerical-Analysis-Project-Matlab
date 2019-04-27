@@ -93,6 +93,7 @@ switch contents
     case 1
         %Empty
         set(handles.methods, 'Val', 1);
+        clearAll(handles);
         set(handles.Info,'Visible','Off');
         set(handles.NP,'Visible','Off');
         set(handles.PNright,'Visible','Off');
@@ -176,9 +177,8 @@ function Next_Callback(hObject, eventdata, handles)
 % hObject    handle to Next (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global itr arr h1 h2 h3 diff i;
+global itr arr h1 h2 h3 h4 diff i equ;
 v = get(handles.methods, 'Val');
-% need for know how many plots  draw---------------------------------------
 s = size(arr,1);
 if ishandle(h1)
     delete(h1);
@@ -188,6 +188,9 @@ if ishandle(h2)
 end
 if ishandle(h3)
     delete(h3);
+end
+if ishandle(h4)
+    delete(h4);
 end
 switch v
     case 2
@@ -202,7 +205,7 @@ switch v
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 3
       %False Postion
         if (itr + 1) < (max(s)+1)
@@ -215,14 +218,41 @@ switch v
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        h4 = plot(xx*ones(size(yy)),yy, '--m');
+        xx = [equ(arr{itr,1}) equ(arr{itr,2})];
+        h3 = plot([arr{itr,1} arr{itr,2}], xx, 'g');
     case 4
         %Fixed Point
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+           i = i + 1;
+        end
+        xx = [arr{itr,1} arr{itr,2}];
+        yy = [arr{itr,1} arr{itr,1}];
+        h1 = plot(yy,xx, 'k');
+        xx = [arr{itr,1} arr{itr,3}];
+        yy = [arr{itr,2} arr{itr,2}];
+        h2 = plot(xx,yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 5
         %Newton Raphson
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+           i = i + 1;
+        end
+        xx = [arr{itr,1} arr{itr,1}];
+        yy = [0 arr{itr,2}];
+        h1 = plot(xx, yy, 'k');
+        xx = [arr{itr,1} arr{itr,3}];
+        yy = [arr{itr,2} 0];
+        h2 = plot(xx, yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 6
       %Secant
-      %need to fix
         if (itr + 1) < (max(s)+1)
            itr = itr + 1;
            i = i + 1;
@@ -232,19 +262,27 @@ switch v
         h1 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = [arr{itr,2} arr{itr,3}];
+        yy = [equ(arr{itr,2}) 0];
+        h3 = plot(xx,yy, 'g');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        yy = -10:10;
+        h4 = plot(xx*ones(size(yy)),yy, '--m');
     case 7
         %Bierge Vieta
         if (itr + diff) < (max(s)+1)
            itr = itr + diff + 1;
            i = i + 1;
         end
-        xx = arr{(itr - diff - 1),4};
+        xx = [arr{(itr - diff - 1),4} arr{(itr - diff - 1),4}];
+        yy = [0 arr{(itr - 1),2}];
+        h1 = plot(xx, yy, 'k');
+        xx = [arr{(itr - diff - 1),4} arr{itr,4}];
+        yy = [arr{(itr - 1),2} 0];
+        h2 = plot(xx, yy, 'k');
+        xx = arr{itr,4};
         yy = -10:10;
-        h1 = plot(xx*ones(size(yy)),yy, 'k');
-        xx = arr{(itr),4};
-        h2 = plot(xx*ones(size(yy)),yy, 'g');  
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 8
         %All
     otherwise     
@@ -256,9 +294,8 @@ function Previous_Callback(hObject, eventdata, handles)
 % hObject    handle to Previous (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global itr arr h1 h2 h3 diff i;
+global itr arr h1 h2 h3 h4 diff i equ;
 v = get(handles.methods, 'Val');
-% need for know how many plots  draw---------------------------------------
 if ishandle(h1)
     delete(h1);
 end
@@ -268,10 +305,13 @@ end
 if ishandle(h3)
     delete(h3);
 end
+if ishandle(h4)
+    delete(h4);
+end
 switch v
     case 2
         %Bisection
-        if (itr - 1) > 1
+        if (itr - 1) >= 1
             itr = itr - 1;
             i = i - 1;
         end
@@ -281,10 +321,10 @@ switch v
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 3
       %False Postion
-        if (itr - 1) > 1
+        if (itr - 1) >= 1
             itr = itr - 1;
             i = i - 1;
         end
@@ -294,15 +334,42 @@ switch v
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        h4 = plot(xx*ones(size(yy)),yy, '--m');
+        xx = [equ(arr{itr,1}) equ(arr{itr,2})];
+        h3 = plot([arr{itr,1} arr{itr,2}], xx, 'g');
     case 4
         %Fixed Point
+        if (itr - 1) >= 1
+            itr = itr - 1;
+            i = i - 1;
+        end
+        xx = [arr{itr,1} arr{itr,2}];
+        yy = [arr{itr,1} arr{itr,1}];
+        h1 = plot(yy,xx, 'k');
+        xx = [arr{itr,1} arr{itr,3}];
+        yy = [arr{itr,2} arr{itr,2}];
+        h2 = plot(xx,yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 5
         %Newton Raphson
+        if (itr - 1) >= 1
+            itr = itr - 1;
+            i = i - 1;
+        end
+        xx = [arr{itr,1} arr{itr,1}];
+        yy = [0 arr{itr,2}];
+        h1 = plot(xx, yy, 'k');
+        xx = [arr{itr,1} arr{itr,3}];
+        yy = [arr{itr,2} 0];
+        h2 = plot(xx, yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 6
       %Secant
-      %need to fix
-        if (itr - 1) > 1
+        if (itr - 1) >= 1
             itr = itr - 1;
             i = i - 1;
         end
@@ -311,19 +378,27 @@ switch v
         h1 = plot(xx*ones(size(yy)),yy, 'k');
         xx = arr{itr,2};
         h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = [arr{itr,2} arr{itr,3}];
+        yy = [equ(arr{itr,2}) 0];
+        h3 = plot(xx,yy, 'g');
         xx = arr{itr,3};
-        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        yy = -10:10;
+        h4 = plot(xx*ones(size(yy)),yy, '--m');
     case 7
         %Bierge Vieta
         if (itr - diff - 1) > 1
            itr = itr - diff - 1;
            i = i - 1;
         end
+        xx = [arr{(itr - diff - 1),4} arr{(itr - diff - 1),4}];
+        yy = [0 arr{(itr - 1),2}];
+        h1 = plot(xx, yy, 'k');
+        xx = [arr{(itr - diff - 1),4} arr{itr,4}];
+        yy = [arr{(itr - 1),2} 0];
+        h2 = plot(xx, yy, 'k');
         xx = arr{itr,4};
         yy = -10:10;
-        h1 = plot(xx*ones(size(yy)),yy, 'k');
-        xx = arr{(itr + diff + 1),4};
-        h2 = plot(xx*ones(size(yy)),yy, 'g'); 
+        h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 8
         %All
     otherwise
@@ -345,9 +420,11 @@ function Calculate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 cla(handles.axes1);
 zoom on;
-global arr itr diff i allarr equation;
+global arr itr diff i allarr equation equ;
 v = get(handles.methods, 'Val');
 equation = get(handles.equation,'String');
+equations = strcat('@(x)',equation);
+equ = str2func(equations);
 x0 = get(handles.X0,'String');
 m = get(handles.maxI,'String');
 e = get(handles.epsilonE,'String');
@@ -548,7 +625,7 @@ else
     filetext = fileread(fullfile(path,file));
     C = strsplit(filetext,'\n');
     str = strtrim(C{1,1});
-    %str = editEquation(str);
+    str = editEquation(str);
     set(handles.equation, 'String', str);
     str = strtrim(C{1,2});
    switch str
@@ -788,6 +865,7 @@ end
 
 function clearAll(handles)
     set(handles.Info,'Title','');
+    set(handles.type,'String','');
     set(handles.Calculate,'Visible','On');
     set(handles.Info,'Visible','On');
     set(handles.PNright,'Visible','Off');

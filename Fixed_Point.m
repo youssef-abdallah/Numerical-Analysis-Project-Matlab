@@ -29,7 +29,7 @@ for i=2:max;
     xi(i)=g(xi(i-1));
     ea=abs(xi(i)-xi(i-1));
      %   xi, f(xi), xi+1,f'(xi), ea
-    row = {xi(i-1), f(xi(i-1)), xi(i), f(xi(i)), ea};
+    row = {xi(i-1), g(xi(i-1)), xi(i), g(xi(i)), ea};
     
     oldData = get(handles.table,'Data');
     newData = [oldData; row];

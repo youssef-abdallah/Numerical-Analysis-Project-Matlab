@@ -3,21 +3,17 @@ equation = strcat('@(x)', equationString);
 tic;
 format long;
 f = str2func(equation);
-% while(true)
-%     if((f(xl)*f(xu))<0)
-%         break;
-%     end
-%     disp('Wrong guesses! Please enter guesses again');
-%     xl = input('Enter first guess value: ');
-%     xu = input('Enter second guess value: ');
-% end
+if f(xl)*f(xu) > 0
+    disp('no bracket')
+    return;
+end
 set(handles.table, 'Data', {})
 maxIterations=maxIter;
 i=0;
 xr(1)=0;
 
 
-x = [(xl-xl/2) (xu+xl/2) f(xl) f(xu)];
+x = [-10 10 10 -10];
 fplot(f,x);
 hold on;
 zoom on;
