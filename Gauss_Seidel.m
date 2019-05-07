@@ -11,7 +11,11 @@ while(~ready)
             for j=1:rows
                 if mat(j,r)>0
                     mat([j r],:)=mat([r j],:);
+                    vect([j r])=vect([r j]);
+                    errorMatrix([j r])=errorMatrix([r j]);
+                    valuesMatrix([j r])=valuesMatrix([r j]);
                     ready=false;
+                    break;
                 end
             end
         end
