@@ -1,5 +1,6 @@
-function x = gaussJordan(a, b)
+function x = gaussJordan(a, b,handles)
 
+tic;
 %constructing the augmented matrix
 [~, cols] = size(a);
 a(:, cols + 1) = b;
@@ -20,6 +21,7 @@ for i = 1 : rows - 1
         a(j, :) = a(j, :) - a(i, :) * (a(j, i) / a(i, i));
     end
 end
+set(handles.time,'String',toc);
 
 %getting the unnormalized identity matrix
 for i = rows: -1: 2

@@ -1,4 +1,4 @@
-function [max] = birgeVieta(polynomial, initialGuess, maxIterations, eps, handles)
+function [max,err] = birgeVieta(polynomial, initialGuess, maxIterations, eps, handles)
     tic;
     functionCoeff = sym2poly(sym(polynomial));
     x = initialGuess;
@@ -27,7 +27,7 @@ function [max] = birgeVieta(polynomial, initialGuess, maxIterations, eps, handle
         [fdx, c] = syntheticDivision(a, m - 1, x);
         max= length(functionCoeff);
         for z=1:max
-        %A     B     C   Xi+1   Ea
+        %A     B     C   Xi+1   Ea 
             if (z == max)
                 row = {functionCoeff(z),b(z),'','' ,''};
             else
@@ -37,15 +37,19 @@ function [max] = birgeVieta(polynomial, initialGuess, maxIterations, eps, handle
             newData = [oldData; row];
             set(handles.table,'Data',newData)
         end
-        xNew = x - (fx / fdx);
-        err=abs(x - xNew);
-        if  err < eps || i > maxIterations
+        if fx ~= 0
+            xNew = x - (fx / fdx);
+        else
+            xNew = x;
+        end
+        err(i)=abs(xNew - x);
+        if  err(i) < eps || i > maxIterations
             done = true;
         end
-        row = {'-','-','-',xNew,err};
-            oldData = get(handles.table,'Data');
-            newData = [oldData; row];
-            set(handles.table,'Data',newData)
+        row = {'-','-','-',xNew,err(end)};
+        oldData = get(handles.table,'Data');
+        newData = [oldData; row];
+        set(handles.table,'Data',newData)
         x = xNew;
         a = functionCoeff;
     end

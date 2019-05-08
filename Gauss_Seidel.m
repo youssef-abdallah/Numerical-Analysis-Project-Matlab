@@ -1,5 +1,6 @@
-function  Gauss_Seidel( mat,vect,initial,maxIterations,error )
-%format long;
+function  [valuesMatrix,errorMatrix] = Gauss_Seidel( mat,vect,initial,maxIterations,error,handles)
+format long;
+tic;
 [rows,cols] = size(mat);
 errorMatrix=vect;
 valuesMatrix=vect;
@@ -48,6 +49,5 @@ for itr=1:maxIterations
 end
 errorMatrix(1,:) = [];
 valuesMatrix(1,:) = [];
-disp(valuesMatrix);
-disp(errorMatrix);
+set(handles.time,'String',toc);
 end

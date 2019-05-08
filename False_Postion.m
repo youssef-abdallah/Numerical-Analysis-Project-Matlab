@@ -1,4 +1,4 @@
-function [ xr ] = False_Postion( xl , xu , max , es , equation , handles)
+function [ ea ] = False_Postion( xl , xu , max , es , equation , handles)
 tic;
 format long;
 xr(1) = xl;
@@ -18,16 +18,16 @@ hold on
 set(handles.table, 'Data', {})
 %----------------------
 if (equ(xl) * equ(xu)) > 0
-    disp('no bracket')
+    set(handles.extraInfo, 'String', 'no bracket');
     return
 end
 max = max + 3;
 for i = 3:max
     xr(i) = (((xl(end) * equ(xu(end))) - (xu(end) * equ(xl(end)))) / (equ(xu(end)) - equ(xl(end))));
-    ea = abs (xr(i) - xr(i - 1));
+    ea(i-2) = abs (xr(i) - xr(i - 1));
     test= equ(xl(end)) * equ(xr(i));
-    % Xl      Xu       Xr       F(Xr)     Es
-    row = {xl(end), xu(end), xr(i), equ(xr(i)), ea};
+    % Xl      Xu       Xr       F(Xr)     Es 
+    row = {xl(end), xu(end), xr(i), equ(xr(i)), ea(end)};
     oldData = get(handles.table,'Data');
     newData = [oldData; row];
     set(handles.table,'Data',newData)
@@ -39,7 +39,7 @@ for i = 3:max
     else
         xl = xr;
     end
-    if (ea < es)
+    if (ea(end) < es)
         break;
     end
 end

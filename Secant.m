@@ -1,4 +1,4 @@
-function [ result ] = Secant(x0 ,x1 , equation, max, es, handles)
+function [ ea ] = Secant(x0 ,x1 , equation, max, es, handles)
 tic;
 format long;
 result(1) = x0;
@@ -19,17 +19,19 @@ set(handles.table, 'Data', {})
 max = max + 3;
 for i = 3:max
     if((equ(result(i - 2)) - equ(result(i - 1)))== 0)
-        fprintf('Error');
         break;
     end 
     result(i) = result(i - 1) - ((equ(result(i - 1)) * ((result(i - 2) - result(i - 1)))) / (equ(result(i - 2)) - equ(result(i - 1))));
-    ea = abs (result(i) - result(i - 1));
-    % Xi-1      Xi       Xi+1       F(Xi+1)     Es
-    row = {result(i - 2), result(i - 1), result(i), equ(result(i)), ea};
+    ea(i-2) = abs (result(i) - result(i - 1));
+    % Xi-1      Xi       Xi+1       F(Xi+1)     Es     Er
+    row = {result(i - 2), result(i - 1), result(i), equ(result(i)), ea(end)};
     oldData = get(handles.table,'Data');
     newData = [oldData; row];
     set(handles.table,'Data',newData)
-    if(ea < es)
+    if equ(result(i)) == 0
+        break;
+    end
+    if(ea(end) < es)
         break;
     end
 end

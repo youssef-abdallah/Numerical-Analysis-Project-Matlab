@@ -1,0 +1,12 @@
+Equation : x - 3
+Method : Secant
+First Point : 0
+Second Point : 9
+Max Iteration : 50
+Epsilon : 1.000000e-05
+
+
+   I                   Xi-1                     Xi                   Xi+1                F(Xi+1)                     Ea
+   -                   ----                     --                   ----                -------                     --
+
+   1             0000000000             0000000009             0000000003             0000000000             0000000006

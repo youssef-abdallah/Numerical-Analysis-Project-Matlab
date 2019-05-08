@@ -1,4 +1,5 @@
-function [result] = LUdecomposition(coeff, b)
+function [result] = LUdecomposition(coeff, b, handles)
+tic;
 % coeff.result = b
 % n the number of variables
 % coeff = L.U
@@ -57,6 +58,7 @@ for i = n : -1 : 1
 end
 
 result = x; 
+set(handles.time,'String',toc);
 
 
 

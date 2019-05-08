@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 27-Apr-2019 15:59:56
+% Last Modified by GUIDE v2.5 06-May-2019 23:27:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+set(handles.table,'ColumnName', {'', '', '', '', ''});
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -100,12 +101,14 @@ switch contents
         set(handles.AxesRight, 'Visible' , 'Off');
         set(handles.AxesLeft, 'Visible' , 'Off');
         set(handles.RT,'Visible','Off');
+        set(handles.open, 'Visible' , 'Off');
     case 2
         %Bisection
         set(handles.methods, 'Val', 2);
         set(handles.table,'ColumnName', {'Xl', 'Xu', 'Xr', 'F(Xr)', 'Ea'});
         set(handles.xx0,'String','Xl');
         set(handles.xx1,'String','Xu');
+        set(handles.open, 'Visible' , 'Off');
         clearAll(handles);
     case 3
         %False Postion
@@ -113,6 +116,7 @@ switch contents
         set(handles.table,'ColumnName', {'Xl', 'Xu', 'Xr', 'F(Xr)', 'Ea'});
         set(handles.xx0,'String','Xl');
         set(handles.xx1,'String','Xu');
+        set(handles.open, 'Visible' , 'Off');
         clearAll(handles);
     case 4
         %Fixed Point
@@ -122,6 +126,7 @@ switch contents
         clearAll(handles);
         set(handles.X1,'Visible','Off');
         set(handles.xx1,'Visible','Off');
+        set(handles.open, 'Visible' , 'Off');
     case 5
         %Newton Raphson
         set(handles.methods, 'Val', 5);
@@ -130,12 +135,14 @@ switch contents
         clearAll(handles);
         set(handles.X1,'Visible','Off');
         set(handles.xx1,'Visible','Off');
+        set(handles.open, 'Visible' , 'Off');
     case 6
         %Secant
         set(handles.methods, 'Val', 6);
         set(handles.table,'ColumnName', {'Xi-1', 'Xi', 'Xi+1', 'F(Xi+1)', 'Ea'});
         set(handles.xx0,'String','Xi-1');
         set(handles.xx1,'String','Xi');
+        set(handles.open, 'Visible' , 'Off');
         clearAll(handles);
     case 7
         %Bierge Vieta
@@ -145,6 +152,7 @@ switch contents
         set(handles.xx0,'String','X0');
         set(handles.X1,'Visible','Off');
         set(handles.xx1,'Visible','Off');
+        set(handles.open, 'Visible' , 'Off');
     case 8
         %All
         v = 1;
@@ -153,7 +161,11 @@ switch contents
         set(handles.AxesRight, 'Visible' , 'Off');
         set(handles.AxesLeft, 'Visible' , 'Off');
         set(handles.Calculate, 'Visible' , 'Off');
+        set(handles.open, 'Visible' , 'Off');
         Change(v, handles);
+    case 9
+        % General Method
+        
     otherwise
 end 
 
@@ -283,8 +295,8 @@ switch v
         xx = arr{itr,4};
         yy = -10:10;
         h3 = plot(xx*ones(size(yy)),yy, '--m');
-    case 8
-        %All
+    case 9
+        %General
     otherwise     
 end
 str = strcat('Num # ', int2str(i));
@@ -399,8 +411,8 @@ switch v
         xx = arr{itr,4};
         yy = -10:10;
         h3 = plot(xx*ones(size(yy)),yy, '--m');
-    case 8
-        %All
+    case 9
+        %General
     otherwise
 end
 str = strcat('Num # ', int2str(i));
@@ -421,6 +433,8 @@ function Calculate_Callback(hObject, eventdata, handles)
 cla(handles.axes1);
 zoom on;
 global arr itr diff i allarr equation xx0 xx1 Max error equ;
+set(handles.extra, 'String','');
+set(handles.extraInfo, 'String', '');
 v = get(handles.methods, 'Val');
 equation = get(handles.equation,'String');
 equations = strcat('@(x)',equation);
@@ -437,6 +451,8 @@ if v ~= 8
     Max = str2double(m);
     e = get(handles.epsilonE,'String');
     error = str2double(e);
+else
+    getxs(1);
 end
 if (isempty(x0) && v ~= 8) || isempty(equation)
    fprintf('Error: Enter Text first\n');
@@ -463,23 +479,26 @@ else
         %Fixed Point
         Fixed_Point(xx0,Max,error,equation,handles);
     case 5
-        %Newton Raphson
-        Newton(xx0, equation, Max, error, handles);
+         %Newton Raphson
+         Newton(xx0, equation, Max, error, handles);
     case 6
-      %Secant
-      Secant(xx0,xx1,equation,Max,error,handles);
+         %Secant
+         Secant(xx0,xx1,equation,Max,error,handles);
     case 7
         %Bierge Vieta
-        diff = birgeVieta(equation, xx0, Max, error, handles);
+        [diff,~] = birgeVieta(equation, xx0, Max, error, handles);
         itr = 1;
     case 8
         %All
         % Will start with bisection
+        set(handles.open, 'Visible' , 'On');
         set(handles.type, 'String' , 'Bisection');
         set(handles.methods, 'Val' , 2);
         Bisection(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
         set(handles.AxesRight, 'Visible' , 'On');
         set(handles.AxesLeft, 'Visible' , 'On');
+    case 9
+        %General
     otherwise
   end
 end
@@ -674,7 +693,7 @@ function PNright_Callback(hObject, eventdata, handles)
 % hObject    handle to PNright (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global v allarr i;
+global v allarr;
 v = v + 1;
 Change(v ,handles);
 if v  == 7
@@ -710,6 +729,8 @@ function AxesRight_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global v diff itr allarr equation i arr;
+set(handles.extra, 'String','');
+set(handles.extraInfo, 'String', '');
 cla(handles.axes1);
 v = mod((v + 1) , 6);
 i = 0;
@@ -721,36 +742,42 @@ switch v
         set(handles.methods, 'Val' , 2);
         set(handles.type, 'String' , 'Bisection');
         Bisection(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
+        getxs(1);
          set(handles.table,'ColumnName', {'Xl', 'Xu', 'Xr', 'F(Xr)', 'Ea'});
     case 2
       %False Postion
       set(handles.methods, 'Val' , 3);
       set(handles.type, 'String' , 'False_Postion');
-      False_Postion(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
+      False_Postion(allarr{1,1},allarr{2,2},allarr{2,3},allarr{2,4},equation,handles);
+      getxs(2);
       set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 3
         %Fixed Point
         set(handles.methods, 'Val' , 4);
         set(handles.type, 'String' , 'Fixed_Point');
-        Fixed_Point(allarr{1,1},allarr{1,3},allarr{1,4},equation,handles);
+        getxs(3);
+        Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 4
         %Newton Raphson
+        getxs(4);
         set(handles.methods, 'Val' , 5);
         set(handles.type, 'String' , 'Newton_Raphson');
-        Newton(allarr{1,1}, equation, allarr{1,3},allarr{1,4}, handles);
+        Newton(allarr{4,1}, equation, allarr{4,3},allarr{4,4}, handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 5
       %Secant
+      getxs(5);
       set(handles.methods, 'Val' , 6);
       set(handles.type, 'String' , 'Secant');
-      Secant(allarr{1,1},allarr{1,2},equation,allarr{1,3},allarr{1,4},handles);
+      Secant(allarr{5,1},allarr{5,2},equation,allarr{5,3},allarr{5,4},handles);
       set(handles.table,'ColumnName', {'Xi-1', 'Xi', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 0
         %Bierge Vieta
+        getxs(6);
         set(handles.methods, 'Val' , 7);
         set(handles.type, 'String' , 'Bierge_Vieta');
-        diff = birgeVieta(equation, allarr{1,1}, allarr{1,3},allarr{1,4}, handles);
+        diff = birgeVieta(equation, allarr{6,1}, allarr{6,3},allarr{6,4}, handles);
         set(handles.table,'ColumnName', {'A', 'B', 'C', 'Xi+1', 'Ea'});
         itr = 1;
     otherwise
@@ -767,6 +794,8 @@ function AxesLeft_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global v diff itr allarr equation i arr;
 cla(handles.axes1);
+set(handles.extra, 'String','');
+set(handles.extraInfo, 'String', '');
 v = mod((v - 1) , 6);
 set(handles.iteration, 'String' , '');
 i = 0;
@@ -774,39 +803,45 @@ itr = 0;
 switch v
     case 1
         %Bisection
+        getxs(1);
         set(handles.methods, 'Val' , 2);
         set(handles.type, 'String' , 'Bisection');
         Bisection(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
          set(handles.table,'ColumnName', {'Xl', 'Xu', 'Xr', 'F(Xr)', 'Ea'});
     case 2
       %False Postion
+      getxs(2);
       set(handles.methods, 'Val' , 3);
       set(handles.type, 'String' , 'False_Postion');
-      False_Postion(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
+      False_Postion(allarr{2,1},allarr{2,2},allarr{2,3},allarr{2,4},equation,handles);
       set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 3
         %Fixed Point
+        getxs(3);
         set(handles.methods, 'Val' , 4);
         set(handles.type, 'String' , 'Fixed_Point');
-        Fixed_Point(allarr{1,1},allarr{1,3},allarr{1,4},equation,handles);
+        Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 4
         %Newton Raphson
+        getxs(4);
         set(handles.methods, 'Val' , 5);
         set(handles.type, 'String' , 'Newton_Raphson');
-        Newton(allarr{1,1}, equation, allarr{1,3},allarr{1,4}, handles);
+        Newton(allarr{4,1}, equation, allarr{4,3},allarr{4,4}, handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 5
       %Secant
+      getxs(5);
       set(handles.methods, 'Val' , 6);
       set(handles.type, 'String' , 'Secant');
-      Secant(allarr{1,1},allarr{1,2},equation,allarr{1,3},allarr{1,4},handles);
+      Secant(allarr{5,1},allarr{5,2},equation,allarr{5,3},allarr{5,4},handles);
       set(handles.table,'ColumnName', {'Xi-1', 'Xi', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 0
         %Bierge Vieta
+        getxs(6);
         set(handles.methods, 'Val' , 7);
         set(handles.type, 'String' , 'Bierge_Vieta');
-        diff = birgeVieta(equation, allarr{1,1}, allarr{1,3},allarr{1,4}, handles);
+        diff = birgeVieta(equation, allarr{6,1}, allarr{6,3},allarr{6,4}, handles);
         set(handles.table,'ColumnName', {'A', 'B', 'C', 'Xi+1', 'Ea'});
         itr = 1;
     otherwise
@@ -882,7 +917,7 @@ function pushbutton11_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global equation xx0 xx1 Max error arr;
 v = get(handles.methods, 'Val');
-fileID = fopen('Result.txt','w');
+fileID = fopen('ResultP1.txt','w');
 fprintf(fileID,'Equation : %s\r\n',equation);
 switch v
     case 2
@@ -901,45 +936,46 @@ switch v
 end
 fprintf(fileID,'First Point : %d\r\n',xx0);
 if (v == 2 || v == 3 || v == 6)
-    fprintf(fileID,'First Point : %d\r\n',xx1);
+    fprintf(fileID,'Second Point : %d\r\n',xx1);
 end
 fprintf(fileID,'Max Iteration : %d\r\n',Max);
 fprintf(fileID,'Epsilon : %d\r\n',error);
 fprintf(fileID,'\r\n\r\n');
+[r,~] = size(arr);
 switch v
     case 2
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xl','Xu','Xr','F(Xr)','Ea');
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','--','--','-----','--');
         fprintf(fileID,'\r\n');
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
         end
     case 3
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xl','Xu','Xr','F(Xr)','Ea');
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','--','--','-----','--');
         fprintf(fileID,'\r\n');
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
         end
     case 4
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi','F(Xi)','Xi+1','F(Xi+1)','Ea');
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','-----','----','-------','--');
         fprintf(fileID,'\r\n');
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
         end
     case 5
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi','F(Xi)','Xi+1','F(Xi+1)','Ea');
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','--','-----','----','-------','--');
         fprintf(fileID,'\r\n');
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
         end
     case 6
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','Xi-1','Xi','Xi+1','F(Xi+1)','Ea');
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','----','--','----','-------','--');
         fprintf(fileID,'\r\n');
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
         end
     case 7
@@ -947,7 +983,7 @@ switch v
         fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','-','-','-','----','--');
         fprintf(fileID,'\r\n');
         j = 1;
-        for i = 1 : max(size(arr,1))
+        for i = 1 : r
             if (arr{i,1} ~= '-')
                 fprintf(fileID,'%4s %22.10d %22.10d %22.10d %22.10s %22.10s\r\n','-',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
             else
@@ -961,3 +997,19 @@ switch v
         end
     otherwise
 end
+
+
+% --- Executes on button press in open.
+function open_Callback(hObject, eventdata, handles)
+% hObject    handle to open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+G2P1();
+
+function getxs(i)
+global xx0 xx1 Max Error allarr;
+xx0 = allarr{i,1};
+xx1 = allarr{i,2};
+Max = allarr{i,3};
+Error = allarr{i,4};
+    
