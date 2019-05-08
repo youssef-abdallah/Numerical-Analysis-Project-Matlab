@@ -1,9 +1,10 @@
-function [result] = LUdecomposition(coeff, b, n)
+function [result] = LUdecomposition(coeff, b)
 % coeff.result = b
 % n the number of variables
 % coeff = L.U
 
 format long;
+[n, ~] = size(coeff);
 
 % indexing starts from 1
 
@@ -12,6 +13,20 @@ U = coeff;
 y = zeros(n, 1);
 x = zeros(n, 1);
 for i = 1:n
+    %partial pivoting
+    for j = i + 1 : n
+        if U(i, i) == 0
+            temp = U(1, :);
+            U(1, :) = U(j, :);
+            U(j, :) = temp;
+            temp2 = b(1);
+            b(1) = b(j);
+            b(j) = temp2;
+        end
+    end
+    
+    % constructing L & U
+    
     for j = 1:i
         l = U(i, j) / U(j, j);
         L(i, j) = l;
