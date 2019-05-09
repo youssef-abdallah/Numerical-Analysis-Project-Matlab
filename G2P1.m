@@ -55,38 +55,57 @@ function G2P1_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for G2P1
 handles.output = hObject;
 global equation allarr;
+axes(handles.Axes);
 er1 = Bisection(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
-er2 = False_Postion(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
-er3 = Fixed_Point(allarr{1,1},allarr{1,3},allarr{1,4},equation,handles);
-er4 = Newton(allarr{1,1}, equation, allarr{1,3},allarr{1,4}, handles);
-er5 = Secant(allarr{1,1},allarr{1,2},equation,allarr{1,3},allarr{1,4},handles);
-[~,er6] = birgeVieta(equation, allarr{1,1}, allarr{1,3},allarr{1,4}, handles);
-x = [0 50 10^0 10^-7];
-f = str2func('@(x)x');
-fplot(f,x);
+er2 = False_Postion(allarr{2,1},allarr{2,2},allarr{2,3},allarr{2,4},equation,handles);
+er3 = Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
+er4 = Newton(allarr{4,1}, equation, allarr{4,3},allarr{4,4}, handles);
+er5 = Secant(allarr{5,1},allarr{5,2},equation,allarr{5,3},allarr{5,4},handles);
+[~,er6] = birgeVieta(equation, allarr{6,1}, allarr{6,3},allarr{6,4}, handles);
 cla(handles.Axes);
+reset(handles.Axes);
+zoom on;
+hold on;
 [~,m] = size(er1);
 for i = 2 : m
+    if (er1(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er1(i) er1(i-1)],'-o g');
 end
 [~,m] = size(er2);
 for i = 2 : m
+    if (er2(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er2(i) er2(i-1)],'-o b');
 end
 [~,m] = size(er3);
 for i = 2 : m
+    if (er3(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er3(i) er3(i-1)],'-o r');
 end
 [~,m] = size(er4);
 for i = 2 : m
+    if (er4(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er4(i) er4(i-1)],'-o c');
 end
 [~,m] = size(er5);
 for i = 2 : m
+    if (er5(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er5(i) er5(i-1)],'-o m');
 end
 [~,m] = size(er6);
 for i = 2 : m
+    if (er6(i) > 10)
+        break;
+    end
     plot([i (i-1)],[er6(i) er6(i-1)],'-o y');
 end
 % Update handles structure

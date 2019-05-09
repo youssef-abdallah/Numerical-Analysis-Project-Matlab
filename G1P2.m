@@ -319,6 +319,47 @@ else
         newData = [oldData; row];
         set(handles.table,'Data',newData);
     end
+    axes(handles.Axes);
+    set(handles.Axes,'Visible','On');
+    zoom on;
+    for i = 1 : rows
+        for j = 1 : col
+            switch j
+                case 1
+                    if i == 1
+                        plot([i (i-1)],[r(i,j) xx0(1)],'-o g');
+                    else
+                        plot([i (i-1)],[r(i,j) r((i-1),j)],'-o g');
+                    end
+                case 2
+                    if i == 1
+                        plot([i (i-1)],[r(i,j) xx0(2)],'-o b');
+                    else
+                        plot([i (i-1)],[r(i,j) r((i-1),j)],'-o b');
+                    end
+                case 3
+                    if i == 1
+                        plot([i (i-1)],[r(i,j) xx0(3)],'-o r');
+                    else
+                        plot([i (i-1)],[r(i,j) r((i-1),j)],'-o r');
+                    end
+                case 4
+                    if i == 1
+                        plot([i (i-1)],[r(i,j) xx0(4)],'-o c');
+                    else
+                        plot([i (i-1)],[r(i,j) r((i-1),j)],'-o c');
+                    end
+                case 5
+                    if i == 1
+                        plot([i (i-1)],[r(i,j) xx0(5)],'-o m');
+                    else
+                        plot([i (i-1)],[r(i,j) r((i-1),j)],'-o m');
+                    end
+                otherwise
+            end
+            hold on;
+        end
+    end
 end
 coef = [];
 num = 0;
@@ -417,18 +458,18 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function [coef] = pivot (a)
-[~,rows] = size(a);
-for i = 1 : rows - 1
-    for j = i + 1 : rows
-        if a(i, i) == 0
-            temp = a(1, :);
-            a(1, :) = a(j, :);
-            a(j, :) = temp;
-        end
-    end
-end
-coef = a;
+% function [coef] = pivot (a)
+% [~,rows] = size(a);
+% for i = 1 : rows - 1
+%     for j = i + 1 : rows
+%         if a(i, i) == 0
+%             temp = a(1, :);
+%             a(1, :) = a(j, :);
+%             a(j, :) = temp;
+%         end
+%     end
+% end
+% coef = a;
 
 
 % --- Executes on button press in save.
@@ -464,14 +505,14 @@ if v == 5
         fprintf(fileID,'%22s %22s %22s %22s %22s %22s\r\n','-','--','-','--','-','--');
         fprintf(fileID,'\r\n');
         for i = 1 : c
-            fprintf(fileID,'%22s %22s %22s %22s %22s %22s\r\n',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5},arr{i,6});
+            fprintf(fileID,'%22d %22d %22d %22d %22d %22d\r\n',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5},arr{i,6});
         end
     else if w == 8
         fprintf(fileID,'%22s %22s %22s %22s %22s %22s %22s %22s\r\n','A','Ea','B','Eb','C','Ec','D','Ed');
         fprintf(fileID,'%22s %22s %22s %22s %22s %22s %22s %22s\r\n','-','--','-','--','-','--','-','--');
         fprintf(fileID,'\r\n');
         for i = 1 : c
-            fprintf(fileID,'%22s %22s %22s %22s %22s %22s %22s %22s\r\n',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5},arr{i,6},arr{i,7},arr{i,8});
+            fprintf(fileID,'%22d %22d %22d %22d %22d %22d %22d %22d\r\n',arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5},arr{i,6},arr{i,7},arr{i,8});
         end    
         end
     end
@@ -481,7 +522,7 @@ else
     fprintf(fileID,'%22s %22s\r\n','--------','-----');
     fprintf(fileID,'\r\n');
     for i = 1 : c
-        fprintf(fileID,'%22s %22s\r\n',arr{i,1},arr{i,2});
+        fprintf(fileID,'%22s %22d\r\n',arr{i,1},arr{i,2});
     end
 end
-equat = [];
+equat = '';

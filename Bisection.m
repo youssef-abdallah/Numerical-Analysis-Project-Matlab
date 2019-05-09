@@ -29,6 +29,9 @@ while(i~=maxIterations)
     ea(i) = abs(xr(i+1)-xr(i));
     % xl   xu   xr   er    f(xr)
     row = {xl,xu,xr(i+1),f(xr(i+1)),ea(end)};
+    if (f(xr(end)) == 0)
+        break;
+    end
     if f(xu)*f(xr(i+1))<0
         xl=xr(i+1);
     else

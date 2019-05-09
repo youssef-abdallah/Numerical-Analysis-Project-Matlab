@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 06-May-2019 23:27:37
+% Last Modified by GUIDE v2.5 09-May-2019 16:25:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,6 +57,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+global mode;
+mode = 0;
 set(handles.table,'ColumnName', {'', '', '', '', ''});
 
 % UIWAIT makes GUI wait for user response (see UIRESUME)
@@ -423,7 +425,17 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+global mode;
+if mode == 0
+    pan on;
+    zoom off;
+    mode = 1;
+else if mode == 1
+        zoom on;
+        pan off;
+        mode = 0;
+    end
+end
 
 % --- Executes on button press in Calculate.
 function Calculate_Callback(hObject, eventdata, handles)
