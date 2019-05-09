@@ -1,8 +1,10 @@
-function root = decker(f, a, b, eps)
-
+function root = decker(f, eps)
+temp = fzero(f, 0);
+a = temp + 0.05;
+b = temp - 0.05;
 fa = f(a);
 fb = f(b);
-if sign(fa) == sign(fb)
+if sign(fa) == sign(fb) || isnan(temp)
       error('f(x) must change sign on the interval [a,b].');
 end
 c = a;
@@ -42,3 +44,4 @@ while true
         fb = f(m);
     end
 end
+
