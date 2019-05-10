@@ -12,8 +12,9 @@ equation3 = strcat('@(x)', 'x');
 y = str2func(equation3);
 syms x;
 derivative = diff(eval(equa));
-[~,m] = size(coeffs(derivative));
-if (m > 1)
+[coeff,types] = coeffs(derivative);
+[~,m] = size(coeff);
+if (m > 1) || (m == 1 && types(1) == x)
     der = matlabFunction(derivative);
     r = der(x0);
 else

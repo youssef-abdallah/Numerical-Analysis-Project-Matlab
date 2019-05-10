@@ -22,7 +22,7 @@ function varargout = G1P2(varargin)
 
 % Edit the above text to modify the response to help G1P2
 
-% Last Modified by GUIDE v2.5 07-May-2019 16:59:14
+% Last Modified by GUIDE v2.5 09-May-2019 23:17:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -526,3 +526,14 @@ else
     end
 end
 equat = '';
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
+run('Main');

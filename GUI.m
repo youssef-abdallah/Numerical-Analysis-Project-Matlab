@@ -22,7 +22,7 @@ function varargout = GUI(varargin)
 
 % Edit the above text to modify the response to help GUI
 
-% Last Modified by GUIDE v2.5 09-May-2019 16:25:50
+% Last Modified by GUIDE v2.5 09-May-2019 23:16:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -167,7 +167,14 @@ switch contents
         Change(v, handles);
     case 9
         % General Method
-        
+        set(handles.methods, 'Val', 9);
+        set(handles.table,'ColumnName', {'A', 'B', 'C', 'M', 'Ea'});
+        clearAll(handles);
+        set(handles.X0,'Visible','Off');
+        set(handles.xx0,'Visible','Off');
+        set(handles.X1,'Visible','Off');
+        set(handles.xx1,'Visible','Off');
+        set(handles.open, 'Visible' , 'Off');
     otherwise
 end 
 
@@ -466,7 +473,7 @@ if v ~= 8
 else
     getxs(1);
 end
-if (isempty(x0) && v ~= 8) || isempty(equation)
+if (isempty(x0) && v ~= 8 && v~= 9) || isempty(equation)
    fprintf('Error: Enter Text first\n');
 else
    if isempty(m) && v ~= 8
@@ -511,12 +518,14 @@ else
         set(handles.AxesLeft, 'Visible' , 'On');
     case 9
         %General
+        decker(equation,error,Max,handles);
     otherwise
   end
 end
 set(handles.X0,'String','');
 set(handles.X1,'String','');
 set(handles.maxI,'String','');
+set(handles.pushbutton11,'Visible' , 'On');
 set(handles.epsilonE,'String','');
 arr = get(handles.table, 'Data');
 i = 0;
@@ -865,6 +874,8 @@ switch v
     case 1
         %Bisection
         set(handles.Info, 'Title', 'Bisection');
+        set(handles.X0,'Visible','On');
+        set(handles.xx0,'Visible','On');
         set(handles.xx0,'String','Xl');
         set(handles.xx1,'String','Xu');
         set(handles.Info,'Visible','On');
@@ -913,6 +924,8 @@ end
 function clearAll(handles)
     set(handles.Info,'Title','');
     set(handles.type,'String','');
+    set(handles.X0,'Visible','On');
+    set(handles.xx0,'Visible','On');
     set(handles.Calculate,'Visible','On');
     set(handles.Info,'Visible','On');
     set(handles.PNright,'Visible','Off');
@@ -920,6 +933,7 @@ function clearAll(handles)
     set(handles.AxesLeft, 'Visible' , 'Off');
     set(handles.X1,'Visible','On');
     set(handles.xx1,'Visible','On');
+    set(handles.pushbutton11,'Visible' , 'Off');
 
 
 % --- Executes on button press in pushbutton11.
@@ -944,11 +958,15 @@ switch v
         fprintf(fileID,'Method : %s\r\n','Secant');
     case 7
         fprintf(fileID,'Method : %s\r\n','Bierge_Vieta');
+    case 9
+        fprintf(fileID,'Method : %s\r\n','General_Method');
     otherwise
 end
-fprintf(fileID,'First Point : %d\r\n',xx0);
-if (v == 2 || v == 3 || v == 6)
-    fprintf(fileID,'Second Point : %d\r\n',xx1);
+if v ~= 9
+    fprintf(fileID,'First Point : %d\r\n',xx0);
+    if (v == 2 || v == 3 || v == 6)
+        fprintf(fileID,'Second Point : %d\r\n',xx1);
+    end
 end
 fprintf(fileID,'Max Iteration : %d\r\n',Max);
 fprintf(fileID,'Epsilon : %d\r\n',error);
@@ -1007,6 +1025,13 @@ switch v
                 j = j + 1;
             end
         end
+      case 9
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','I','A','B','C','M','Ea');
+        fprintf(fileID,'%4s %22s %22s %22s %22s %22s\r\n','-','-','-','-','-','--');
+        fprintf(fileID,'\r\n');
+        for i = 1 : r
+            fprintf(fileID,'%4d %22.10d %22.10d %22.10d %22.10d %22.10d\r\n',i,arr{i,1},arr{i,2},arr{i,3},arr{i,4},arr{i,5});
+        end
     otherwise
 end
 
@@ -1025,3 +1050,14 @@ xx1 = allarr{i,2};
 Max = allarr{i,3};
 Error = allarr{i,4};
     
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+delete(hObject);
+run('Main');
