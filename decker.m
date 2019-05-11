@@ -1,22 +1,48 @@
-function root = decker(f, eps, maxIterations)
-[a, b] = getInitialGuess(f, maxIterations);
+function decker(equation, eps, max, handles)
+format long;
+equ = strcat('@(x)',equation);
+f = str2func(equ);
+[a, b] = getInitialGuess(f, max);
 fa = f(a);
 fb = f(b);
+tic;
 if sign(fa) == sign(fb)
-      error('f(x) must change sign on the interval [a,b].');
+      set(handles.extraInfo, 'String', 'no bracket');
+      return;
 end
+
+x = [-10 10 10 -10];
+fplot(f,x);
+hold on;
+zoom on;
+xx = -10:10;
+yy = 0;
+plot(xx,yy*ones(size(xx)), 'k');
+hold on
+
 c = a;
 fc = fa;
 i = 0;
-while true
+m = (b + c) / 2;
+set(handles.table, 'Data', {})
+while i < max
     i = i + 1;
     if sign(fb) == sign(fc)
         c = a;
         fc = fa;
     end
+    
+    % A      B       C       M     Es
+    row = {a, b, c, m, abs(b - c)};
+    oldData = get(handles.table,'Data');
+    newData = [oldData; row];
+    set(handles.table,'Data',newData)
+    
     if abs(b - a) < eps
-        root = b;
-        return
+        break;
+    end
+    if f(b) == 0
+        break;
     end
     if abs(fc) < abs(fb)
         a = b;
@@ -42,4 +68,5 @@ while true
         fb = f(m);
     end
 end
-
+set(handles.answer, 'String' ,b);
+set(handles.time,'String',toc);

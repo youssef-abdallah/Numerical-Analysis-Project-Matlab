@@ -306,6 +306,22 @@ switch v
         h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 9
         %General
+        if (itr + 1) < (max(s)+1)
+           itr = itr + 1;
+           i = i + 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        xx = arr{itr,4};
+        yy = -10:10;
+        h4 = plot(xx*ones(size(yy)),yy, '-- m');
     otherwise     
 end
 str = strcat('Num # ', int2str(i));
@@ -422,6 +438,22 @@ switch v
         h3 = plot(xx*ones(size(yy)),yy, '--m');
     case 9
         %General
+        if (itr - 1) >= 1
+            itr = itr - 1;
+            i = i - 1;
+        end
+        xx = arr{itr,1};
+        yy = -10:10;
+        h1 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,3};
+        yy = -10:10;
+        h2 = plot(xx*ones(size(yy)),yy, 'k');
+        xx = arr{itr,2};
+        yy = -10:10;
+        h3 = plot(xx*ones(size(yy)),yy, 'g');
+        xx = arr{itr,4};
+        yy = -10:10;
+        h4 = plot(xx*ones(size(yy)),yy, '-- m');
     otherwise
 end
 str = strcat('Num # ', int2str(i));
