@@ -28,9 +28,14 @@ equation3 = strcat('@(x)', 'x');
 y = str2func(equation3);
 derivative = diff(eval(equa));
 try
+    
+    catc
+[coeff,~] = coeffs(derivative);
+[~,m] = size(coeff);
+if (m > 1) || (m == 1 && g(1) ~= double(coeffs(derivative)))
     der = matlabFunction(derivative);
     r = der(x0);
-catch
+else
     r = double(coeffs(derivative));
 end
 if (abs(r) <= 1 && r > 0)
