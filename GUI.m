@@ -198,7 +198,7 @@ function Next_Callback(hObject, eventdata, handles)
 % hObject    handle to Next (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global itr arr h1 h2 h3 h4 diff i equ;
+global itr arr h1 h2 h3 h4 diff i equ neg;
 v = get(handles.methods, 'Val');
 s = size(arr,1);
 if ishandle(h1)
@@ -248,7 +248,15 @@ switch v
            itr = itr + 1;
            i = i + 1;
         end
-        xx = [arr{itr,1} arr{itr,2}];
+        if itr == 1
+            xx = [0 arr{itr,2}];
+        else
+            if neg == 1
+                xx = [(-1*arr{itr,1}) arr{itr,2}];
+            else
+                xx = [arr{itr,1} arr{itr,2}];
+            end
+        end
         yy = [arr{itr,1} arr{itr,1}];
         h1 = plot(yy,xx, 'k');
         xx = [arr{itr,1} arr{itr,3}];
@@ -380,7 +388,15 @@ switch v
             itr = itr - 1;
             i = i - 1;
         end
-        xx = [arr{itr,1} arr{itr,2}];
+        if itr == 1
+            xx = [0 arr{itr,2}];
+        else
+           if neg == 1
+                xx = [(-1*arr{itr,1}) arr{itr,2}];
+            else
+                xx = [arr{itr,1} arr{itr,2}];
+            end
+        end
         yy = [arr{itr,1} arr{itr,1}];
         h1 = plot(yy,xx, 'k');
         xx = [arr{itr,1} arr{itr,3}];
@@ -483,9 +499,12 @@ function Calculate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 cla(handles.axes1);
 zoom on;
-global arr itr diff i allarr equation xx0 xx1 Max error equ;
+global arr itr diff i allarr equation xx0 xx1 Max error equ neg;
 set(handles.extra, 'String','');
 set(handles.extraInfo, 'String', '');
+set(handles.answer, 'String','');
+set(handles.time, 'String','');
+set(handles.table, 'Data', {});
 v = get(handles.methods, 'Val');
 equation = get(handles.equation,'String');
 equations = strcat('@(x)',equation);
@@ -528,7 +547,7 @@ else
       False_Postion(xx0,xx1,Max,error,equation,handles);
     case 4
         %Fixed Point
-        Fixed_Point(xx0,Max,error,equation,handles);
+        [~,neg]=Fixed_Point(xx0,Max,error,equation,handles);
     case 5
          %Newton Raphson
          Newton(xx0, equation, Max, error, handles);
@@ -781,7 +800,7 @@ function AxesRight_Callback(hObject, eventdata, handles)
 % hObject    handle to AxesRight (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global v diff itr allarr equation i arr;
+global v diff itr allarr equation i arr neg;
 set(handles.extra, 'String','');
 set(handles.extraInfo, 'String', '');
 cla(handles.axes1);
@@ -809,7 +828,7 @@ switch v
         set(handles.methods, 'Val' , 4);
         set(handles.type, 'String' , 'Fixed_Point');
         getxs(3);
-        Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
+        [~,neg] = Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 4
         %Newton Raphson
@@ -845,7 +864,7 @@ function AxesLeft_Callback(hObject, eventdata, handles)
 % hObject    handle to AxesLeft (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global v diff itr allarr equation i arr;
+global v diff itr allarr equation i arr neg;
 cla(handles.axes1);
 set(handles.extra, 'String','');
 set(handles.extraInfo, 'String', '');
@@ -873,7 +892,7 @@ switch v
         getxs(3);
         set(handles.methods, 'Val' , 4);
         set(handles.type, 'String' , 'Fixed_Point');
-        Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
+        [~,neg] = Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
         set(handles.table,'ColumnName', {'Xi', 'F(Xi)', 'Xi+1', 'F(Xi+1)', 'Ea'});
     case 4
         %Newton Raphson

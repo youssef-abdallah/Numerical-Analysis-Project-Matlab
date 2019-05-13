@@ -58,7 +58,7 @@ global equation allarr;
 axes(handles.Axes);
 er1 = Bisection(allarr{1,1},allarr{1,2},allarr{1,3},allarr{1,4},equation,handles);
 er2 = False_Postion(allarr{2,1},allarr{2,2},allarr{2,3},allarr{2,4},equation,handles);
-er3 = Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
+[er3,~] = Fixed_Point(allarr{3,1},allarr{3,3},allarr{3,4},equation,handles);
 er4 = Newton(allarr{4,1}, equation, allarr{4,3},allarr{4,4}, handles);
 er5 = Secant(allarr{5,1},allarr{5,2},equation,allarr{5,3},allarr{5,4},handles);
 [~,er6] = birgeVieta(equation, allarr{6,1}, allarr{6,3},allarr{6,4}, handles);

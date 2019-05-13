@@ -1,6 +1,13 @@
 function [max,err] = birgeVieta(polynomial, initialGuess, maxIterations, eps, handles)
+
     tic;
-    functionCoeff = sym2poly(sym(polynomial));
+    try
+        functionCoeff = sym2poly(sym(polynomial));
+    catch
+        max = 0;
+        err =[];
+        return;
+    end
     x = initialGuess;
     
     equations = strcat('@(x)',polynomial);

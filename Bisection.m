@@ -29,6 +29,9 @@ while(i~=maxIterations)
     ea(i) = abs(xr(i+1)-xr(i));
     % xl   xu   xr   er    f(xr)
     row = {xl,xu,xr(i+1),f(xr(i+1)),ea(end)};
+    oldData = get(handles.table,'Data');
+    newData = [oldData; row];
+    set(handles.table,'Data',newData)
     if (f(xr(end)) == 0)
         break;
     end
@@ -38,10 +41,7 @@ while(i~=maxIterations)
         xu=xr(i+1);
     end
 
-    oldData = get(handles.table,'Data');
-    newData = [oldData; row];
-    set(handles.table,'Data',newData)
-    if (ea(end) < error)
+    if (ea(end) < error && i ~= 1)
         break;
     end
 

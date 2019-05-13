@@ -2,6 +2,7 @@ function [ ea ] = Newton(x0, equationString, max, es, handles)
 tic;
 format long;
 result(1) = x0;
+check = 0;
 equation = strcat('@(x)', equationString);
 equ = str2func(equation);
 df = diff(sym(equ));
@@ -23,6 +24,10 @@ max = max + 1;
 for i = 2:max
     try
         dd = d(result(i-1));
+        if dd == 0
+            check = 1;
+            break;
+        end
     catch
         dd = double(coeffs(df));
     end
@@ -37,7 +42,11 @@ for i = 2:max
         break;
     end
 end
-set(handles.answer, 'String' ,result(end));
+if check == 1
+    set(handles.answer, 'String' ,'first derivative = 0');
+else
+    set(handles.answer, 'String' ,result(end));
+end
 set(handles.time,'String',toc);
 end
 
