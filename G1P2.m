@@ -200,6 +200,7 @@ end
 equ = eval(equation);
 [cc, var] = coeffs(equ);
 temp = zeros(1,5);
+rres = 0;
 for i = 1 : max(size(var))
     if (var(i) == a)
         temp(1) = double(cc(i));
@@ -231,6 +232,7 @@ function calculate_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global coef res num x0 ready;
+set(handles.Axes,'Visible','Off');
 for i = 1 : 5 % number of variable
     adder = 0;
     for j = 1 : num
@@ -291,8 +293,6 @@ switch v
             end
         end
         [r,e] = Gauss_Seidel(coef,res,xx0,Max,Error,handles);
-        %set(handles.table2,'Visible','On');
-        %set(handles.table,'Visible','Off');
     otherwise
 end
 if (v ~= 5)
@@ -321,6 +321,7 @@ else
     end
     axes(handles.Axes);
     set(handles.Axes,'Visible','On');
+    cla(handles.Axes);
     zoom on;
     for i = 1 : rows
         for j = 1 : col

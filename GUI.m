@@ -716,7 +716,7 @@ else
        case 'secant'
            set(handles.methods, 'Val' , 6);
            set(handles.table,'ColumnName', {'Xi-1', 'Xi', 'Xi+1', 'F(Xi+1)', 'Ea'});
-       case 'bierge vieta'
+       case 'birge vieta'
            set(handles.methods, 'Val' , 7);
            set(handles.table,'ColumnName', {'A', 'B', 'C', 'Xi+1', 'Ea'});
        otherwise
