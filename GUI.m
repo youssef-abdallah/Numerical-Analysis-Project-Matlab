@@ -339,7 +339,7 @@ function Previous_Callback(hObject, eventdata, handles)
 % hObject    handle to Previous (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global itr arr h1 h2 h3 h4 diff i equ;
+global itr arr h1 h2 h3 h4 diff i equ neg;
 v = get(handles.methods, 'Val');
 if ishandle(h1)
     delete(h1);
